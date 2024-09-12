@@ -27,3 +27,12 @@ class books_post(models.Model):
 
     def __str__(self):
         return f'{self.tittle} - {self.image}'
+
+
+class Reviewbook(models.Model):
+    book_review = models.ForeignKey(books_post, on_delete=models.CASCADE, related_name='review_book')
+    text_book = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.text_book} - {self.created_at}'

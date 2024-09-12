@@ -1,0 +1,17 @@
+{% include 'header.html' %}
+<br><br><br>
+
+{% for i in for_adult %}
+    <h1>{{ i.name }}</h1>
+{% endfor %}
+<hr>
+
+{% for i in for_old %}
+    <h1>{{ i.name }}</h1>
+{% endfor %}
+
+{% for i in for_kids %}
+    <h1>{{ i.name }}</h1>
+{% endfor %}
+
+{% include 'footer.html' %}
