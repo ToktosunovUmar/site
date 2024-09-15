@@ -1,17 +1,21 @@
 {% include 'header.html' %}
 
+<center>
+<div class="square_mom">
+    <h1>Books</h1>
 
-<h1>Books</h1>
-
-{% for i in book_post_object %}
-
-<h2>{{ i.tittle }}</h2>
-<h3>{{ i.author }}</h3>
-
-<img src="{{ i.image.url }}" alt="Book Image" width="420" height="340">
-<p>{{ i.created_at }}</p>
-<a href="/book_post_list/{{ i.id }}/">Подробнее</a>
-
-{% endfor %}
+    {% for i in book_post_object %}
+    <div class="card" style="width: 18rem;">
+        <img src="{{ i.image.url }}" alt="Book Image" class="card-img-top" style="width: 100%; height: auto;">
+        <div class="card-body">
+            <h5 class="card-title">{{ i.tittle }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ i.author }}</h6>
+            <p class="card-text">{{ i.created_at }}</p>
+            <a href="/book_post_list/{{ i.id }}/" class="btn btn-primary">Подробнее</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+</center>
 
 {% include 'footer.html' %}
