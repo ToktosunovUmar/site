@@ -12,7 +12,7 @@ class books_post(models.Model):
     )
     #
     tittle = models.CharField(max_length=255,
-                              verbose_name='enter title book')
+                              verbose_name='enter title book', db_index=True, null=True)
     author = models.CharField(max_length=255,
                               verbose_name='author name')
     image = models.ImageField(upload_to='post/',
@@ -23,7 +23,7 @@ class books_post(models.Model):
     email = models.EmailField(verbose_name='write your email')
     genre = models.CharField(max_length=100, choices=GENRE)
 
-    publication_date = models.DateTimeField(auto_now_add=True)
+    publication_date = models.DateTimeField(auto_now_add=True, db_index=True, null=True)
 
     def __str__(self):
         return f'{self.tittle} - {self.image}'

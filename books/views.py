@@ -4,6 +4,7 @@ import datetime
 from . import models, forms
 from django.views import generic
 
+
 class Searchbookview(generic.ListView):
     template_name = 'book_list.html'
     context_object_name = 'book_post_object'
@@ -26,6 +27,7 @@ class Editbookview(generic.ListView):
     def get_queryset(self):
         return self.model.objects.all().order_by('-id')
 
+
 class Updateview(generic.UpdateView):
     template_name = 'crud/update_book.html'
     form_class = forms.book_Form
@@ -36,14 +38,7 @@ class Updateview(generic.UpdateView):
         return get_object_or_404(models.books_post, id=book_id)
 
 
-
-
-
-
-
-
-
-#def edit_book_view(request):
+# def edit_book_view(request):
 #    if request.method == "GET":#
 #       book_edit_object = models.books_post.objects.all()
 #       return render(
@@ -55,7 +50,7 @@ class Updateview(generic.UpdateView):
 #       )
 #
 #
-#def update_view(request, id):
+# def update_view(request, id):
 #    book_id = get_object_or_404(models.books_post, id=id)
 #    if request.method == 'POST':
 #        form = forms.book_Form(request.POST, instance=book_id)
