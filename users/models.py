@@ -10,21 +10,19 @@ class CustomUser(User):
         ('Male', 'male'),
         ('Female', 'female')
     )
-    phone_number = models.CharField(max_length=17, default='+996')
+    phone_number = models.CharField(max_length=17, default='+996', db_index=True, null=True)
     exp = models.PositiveIntegerField(default=10,
                                       validators=[
                                           MaxValueValidator(8),
                                           MinValueValidator(1),
-                                      ])
-    gender = models.CharField(max_length=10, choices=GENDER)
-    club = models.CharField(max_length=100, default="Опыт не определен")
+                                      ], db_index=True, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER, db_index=True, null=True)
+    club = models.CharField(max_length=100, default="Опыт не определен", db_index=True, null=True)
 
 
 @receiver(post_save, sender=CustomUser)
 def set_club(sender, instance, created, **kwargs):
     if created:
-        print("Пользователь создан")
-
         exp = instance.exp
         if exp < 1:
             instance.club = 'Мало опыта!!'

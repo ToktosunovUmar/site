@@ -4,8 +4,11 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView
 from django.urls import reverse_lazy
 from . import forms, models, middlewares
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class RegistrationView(CreateView):
     template_name = 'users/register.html'
     form_class = forms.CustomRegisterForm
@@ -27,7 +30,11 @@ class RegistrationView(CreateView):
         self.object.save()
         return response
 
+    def get_queryset(self):
+        return self.model.objects.prefetch_related('review_book').all()
 
+
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class AuthLoginView(LoginView):
     template_name = 'users/login.html'
     form_class = AuthenticationForm
@@ -35,17 +42,25 @@ class AuthLoginView(LoginView):
     def get_success_url(self):
         return reverse('users:user_list')
 
+    def get_queryset(self):
+        return self.model.objects.prefetch_related('review_book').all()
 
+
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class AuthLogoutView(LogoutView):
     next_page = reverse_lazy('users:login')
 
+    def get_queryset(self):
+        return self.model.objects.prefetch_related('review_book').all()
 
+
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class UserListView(ListView):
     template_name = 'users/user_list.html'
     model = models.CustomUser
 
     def get_queryset(self):
-        return self.model.objects.all()
+        return self.model.objects.prefetch_related('review_book').all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

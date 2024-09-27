@@ -1,17 +1,22 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 import datetime
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.urls import reverse
 from . import models, forms
 from django.views import generic
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class Searchbookview(generic.ListView):
     template_name = 'book_list.html'
     context_object_name = 'book_post_object'
     paginate_by = 5
 
     def get_queryset(self):
-        return models.books_post.objects.filter(tittle__icontains=self.request.GET.get('q')).order_by('-id')
+        return models.books_post.objects.prefetch_related('review_book').\
+            filter(tittle__icontains=self.request.GET.get('q')).all().order_by('-id')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -19,15 +24,17 @@ class Searchbookview(generic.ListView):
         return context
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class Editbookview(generic.ListView):
     template_name = 'crud/edit_book.html'
     context_object_name = 'book_edit_object'
     model = models.books_post
 
     def get_queryset(self):
-        return self.model.objects.all().order_by('-id')
+        return self.model.objects.prefetch_related('review_book').all().order_by('-id')
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class Updateview(generic.UpdateView):
     template_name = 'crud/update_book.html'
     form_class = forms.book_Form
@@ -36,6 +43,9 @@ class Updateview(generic.UpdateView):
     def get_object(self, **kwargs):
         book_id = self.kwargs.get('id')
         return get_object_or_404(models.books_post, id=book_id)
+
+    def get_queryset(self):
+        return self.model.objects.prefetch_related('review_book').all()
 
 
 # def edit_book_view(request):
@@ -69,16 +79,17 @@ class Updateview(generic.UpdateView):
 #        }
 #    )
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class Deletebookview(generic.ListView):
     template_name = 'crud/delete_book.html'
     context_object_name = 'book_delete_object'
     model = models.books_post
 
     def get_queryset(self):
-        return self.model.objects.all()
+        return self.model.objects.prefetch_related('review_book').all()
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class Bookdropview(generic.DeleteView):
     template_name = 'crud/confirm_delete.html'
     success_url = '/book_delete_list/'
@@ -86,6 +97,9 @@ class Bookdropview(generic.DeleteView):
     def get_object(self, **kwargs):
         book_id = self.kwargs.get('id')
         return get_object_or_404(models.books_post, id=book_id)
+
+    def get_queryset(self):
+        return self.model.objects.prefetch_related('review_book').all()
 
 
 # def delete_book_view(request):
@@ -105,7 +119,7 @@ class Bookdropview(generic.DeleteView):
 #    book_id.delete()
 #    return HttpResponse('Книга удалены!!! <a href = "/book_post_list/">На список книг</a>')
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class Addbookview(generic.CreateView):
     template_name = 'crud/book_add.html'
     form_class = forms.book_Form
@@ -114,6 +128,9 @@ class Addbookview(generic.CreateView):
     def form_valid(self, form):
         print(form.cleaned_data)
         return super(Addbookview, self).form_valid(form=form)
+
+    def get_queryset(self):
+        return self.model.objects.prefetch_related('review_book').all()
 
 
 # def add_book_view(request):
@@ -132,7 +149,7 @@ class Addbookview(generic.CreateView):
 #        }
 #    )
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class Bookdetailview(generic.DetailView):
     template_name = 'book_detail.html'
     context_object_name = 'book_id'
@@ -140,6 +157,9 @@ class Bookdetailview(generic.DetailView):
     def get_object(self, **kwargs):
         book_id = self.kwargs.get('id')
         return get_object_or_404(models.books_post, id=book_id)
+
+    def get_queryset(self):
+        return self.model.objects.prefetch_related('review_book').all()
 
 
 # def book_detail_view(request, id):
@@ -153,14 +173,14 @@ class Bookdetailview(generic.DetailView):
 #            }
 #        )
 
-
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class Booklistview(generic.ListView):
     template_name = 'book_list.html'
     context_object_name = 'book_post_object'
     model = models.books_post
 
     def get_queryset(self):
-        return self.model.objects.all()
+        return self.model.objects.prefetch_related('review_book').all()
 
 
 # def book_list_view(request):
