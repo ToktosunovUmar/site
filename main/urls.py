@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('books.urls')),
     path('', include('product.urls')),
     path('', include('users.urls')),
+    path('',include('parser_app.urls')),
 
 ]
 

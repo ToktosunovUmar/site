@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'product',
     'users',
     'debug_toolbar',
+    'parser_app',
 ]
 
 MIDDLEWARE = [

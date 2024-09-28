@@ -15,7 +15,7 @@ class Searchbookview(generic.ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return models.books_post.objects.prefetch_related('review_book').\
+        return models.books_post.objects.prefetch_related('review_book'). \
             filter(tittle__icontains=self.request.GET.get('q')).all().order_by('-id')
 
     def get_context_data(self, *, object_list=None, **kwargs):
